@@ -66,7 +66,7 @@ def Menu():
 
     print("1. List dates")
     print("2. Learning modality by state on date")
-    print("3. An analysis you choose")
+    print("3. District modality over time")
     print("4. Exit\n")
     
 
@@ -107,6 +107,17 @@ def generateDates(data):
     for date in distincts:
         modDates.append(date[:10])
     return modDates
+
+def generateDistricts(data):
+
+    distincts = []
+    for modality in data:
+        if(modality[1] not in distincts):
+            distincts.append(modality[1])
+    
+    return distincts
+
+
 
 def summary(data):
 
@@ -181,7 +192,7 @@ def summary(data):
             if(choice not in validMenu):
                 print("Invalid Choice")
             else:
-                break;
+                break
 
         if(choice == 'y'):
             repeat = True
@@ -189,6 +200,99 @@ def summary(data):
             repeat = False
             print("\n")
 
+
+def districtAnalysis(data):
+    
+    print("Gathering District Names (This may take a minute)...\n")
+    
+    validDistricts = generateDistricts(data)
+    validMenu =['y','n']
+    repeat = True
+    
+    
+    while(repeat):
+        numSchools = 0
+        numStudents = 0
+        schoolNumIP = 0
+        schoolNumHybrid = 0
+        schoolNumRemote = 0
+
+        studentNumIP = 0
+        studentNumHybrid = 0
+        studentNumRemote = 0
+
+        while(True):
+            district = str(input("Enter the district name: "))
+            if(district in validDistricts):
+                break
+            else:
+                print("Invalid District")
+                
+        
+        
+        print("-------------------------------")
+        for school in data:
+            if(school[1] == district):
+                numSchools += int(school[4])
+                numStudents += int(school[5])
+                if(school[3] == 'In Person'):
+                    schoolNumIP += int(school[4])
+                    studentNumIP += int(school[5])
+                elif(school[3] == 'Hybrid'):
+                    schoolNumHybrid += int(school[4])
+                    studentNumHybrid += int(school[5])
+                elif(school[3] == 'Remote'):
+                    schoolNumRemote += int(school[4])
+                    studentNumRemote += int(school[5])
+                
+
+                print("Date: " + school[2][:10])
+                print("Description: " + district)
+                print(f'{numStudents:,}' + " students")
+                print("Schools per modality:")
+                print(f' * {schoolNumIP:,} ({((schoolNumIP/numSchools) * 100):.2f}%) In Person')
+                print(f' * {schoolNumHybrid:,} ({((schoolNumHybrid/numSchools) * 100):.2f}%) Hybrid')
+                print(f' * {schoolNumRemote:,} ({((schoolNumRemote/numSchools) * 100):.2f}%) Remote')
+                print("Students per modality:")
+                print(f' * {studentNumIP:,} ({((studentNumIP/numStudents) * 100):.2f}%) In Person')        
+                print(f' * {studentNumHybrid:,} ({((studentNumHybrid/numStudents) * 100):.2f}%) Hybrid')
+                print(f' * {studentNumRemote:,} ({((studentNumRemote/numStudents) * 100):.2f}%) Remote')
+                print("-------------------------------\n")
+    
+    
+                numSchools = 0
+                numStudents = 0
+                schoolNumIP = 0
+                schoolNumHybrid = 0
+                schoolNumRemote = 0
+
+                studentNumIP = 0
+                studentNumHybrid = 0
+                studentNumRemote = 0
+            
+            
+        while(True):
+            choice = input("Enter another district: (y/n) ")
+            if(choice not in validMenu):
+                print("Invalid Choice")
+            else:
+                break
+
+        if(choice == 'y'):
+            repeat = True
+        else:
+            repeat = False
+            print("\n")
+                
+                
+def uExit():    
+    
+    print("Tom Winterton | twkdb@umsystem.edu | Learning Modalities")
+    return True
+
+
+        
+        
 def main():
     print("Learning Modalities Analyzer\n")
 
@@ -206,9 +310,9 @@ def main():
             dates(masterDataList)
         elif(choice == 2):
             summary(masterDataList)
-        # elif(choice == 3):
-        #     analysis(masterDataList)
-        # elif(choice == 4):
-        #     exitClause = uExit()    
+        elif(choice == 3):
+            districtAnalysis(masterDataList)
+        elif(choice == 4):
+            exitClause = uExit()    
 
 main()
